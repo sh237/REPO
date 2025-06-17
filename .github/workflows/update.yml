@@ -50,7 +50,10 @@ jobs:
 
       - name: Run inference
         run: |
-          python ml/inference.py --params params/main/params.yaml --fold 1 --data_root ./ml/datasets --cuda_device -1 --history 4 --trial_name 090 --mode test --resume_from_checkpoint ./ml/checkpoints/main/ours.pth
+          # 現在時刻を取得して推論を実行
+          CURRENT_DATETIME=$(date -u +"%Y%m%d_%H0000")
+          echo "Running inference for datetime: $CURRENT_DATETIME"
+          python ml/inference.py --params params/main/params.yaml --fold 1 --data_root ./ml/datasets --cuda_device -1 --history 4 --trial_name 090 --mode test --resume_from_checkpoint ./ml/checkpoints/main/ours.pth --datetime $CURRENT_DATETIME
 
       - name: Commit and push
         run: |
