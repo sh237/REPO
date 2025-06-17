@@ -18,7 +18,7 @@ AIA_WAVELENGTHS = [
     '0094', '0131', '0171', '0193', '0211', '0304', '0335', '1600', '4500'
 ]
 SAVE_ROOT = 'data/images'
-H5_SAVE_ROOT = 'ml/datasets/all_data_hours'
+H5_SAVE_ROOT = './ml/datasets/all_data_hours'
 XRS_PATH = 'data/xrs.json'
 XRS_URL = "https://services.swpc.noaa.gov/json/goes/primary/xrays-7-day.json"
 

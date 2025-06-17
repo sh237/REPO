@@ -121,7 +121,7 @@ def main():
     parser = ArgumentParser()
     parser.add_argument("--params", required=True, help="YAML設定ファイルのパス")
     parser.add_argument("--fold", type=int, required=True, help="Fold番号")
-    parser.add_argument("--data_root", default="./ml/datasets", help="datasetsディレクトリのルート")
+    parser.add_argument("--data_root", default="./datasets", help="datasetsディレクトリのルート")
     parser.add_argument("--cuda_device", type=int, default=0)
     parser.add_argument("--history", type=int, default=4, help="使用する履歴ファイル数（例: 4）")
     parser.add_argument("--trial_name", default="idxxxx")
