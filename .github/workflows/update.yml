@@ -1,0 +1,55 @@
+name: run_inference
+
+on:
+  schedule:
+    - cron: "20 * * * *" # 毎時20分に実行
+    - cron: "50 * * * *" # 毎時50分に実行
+  workflow_dispatch: # 手動実行用
+
+jobs:
+  inference:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      
+      - name: Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run get_data
+        run: python back/get_data.py
+
+      - name: Extract pretrain features
+        run: |
+          cd ml
+          # 現在時刻を取得してinference_pretrainを実行
+          CURRENT_DATETIME=$(date -u +"%Y%m%d_%H0000")
+          echo "Extracting features for datetime: $CURRENT_DATETIME"
+          python inference_pretrain.py --params params/main/params.yaml --datetime $CURRENT_DATETIME --fold 1 --pretrain_checkpoint checkpoints/pretrain/ours.pth
+
+      - name: Run inference
+        run: |
+          cd ml
+          python inference.py --params params/main/params.yaml --fold 1 --data_root ./datasets --cuda_device -1 --history 4 --trial_name 090 --mode test --resume_from_checkpoint ./checkpoints/main/ours.pth
+
+      - name: Commit and push
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add data/
+          git add ml/datasets/
+          TIMESTAMP=$(date +"%H:%M")
+          git commit -m "🤖Update data [auto] at $TIMESTAMP" || echo "No changes to commit"
+          git push

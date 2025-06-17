@@ -1,0 +1,94 @@
+# yaml:params/params_fold1.yaml
+epochs: 30
+lr: 0.00004
+weight_decay: 0.04
+bs: 64
+factor:
+  GMGS: 0.0001
+  BS: 10
+  CE: 1
+main_metric: GMGS
+
+# クラスの重み付けの設定を追加（ステージごと）
+class_weights:
+  stage1:
+    enabled: false
+    method: "inverse"  # 'none', 'inverse', 'effective_samples', 'custom'
+    custom_weights: [1.0, 1.0, 2.0, 4.0]
+    beta: 0.9999
+  stage2:
+    enabled: false
+    method: "inverse"
+    custom_weights: [1.0, 1.0, 3.0, 5.0]  # stage2では不均衡を強調
+    beta: 0.9999
+
+# 2段階学習の設定を追加
+stage2:
+  lr: 0.00001
+  epochs: 20
+
+# 早期停止の設定
+early_stopping:
+  metric: "valid_GMGS"  # "valid_GMGS" または "valid_loss"
+  patience: 5
+
+dataset:
+  force_recalc_indices: false
+  force_recalc_stats: false
+
+model:
+  selected: Ours
+  models:
+    FlareTransformer:
+      architecture_params: 
+        input_channel: 90
+        output_channel: 4
+        window: 4
+        sfm_params:
+          N: 1
+          d_model: 128
+          h: 4
+          d_ff: 16
+          dropout: 0.1
+        mm_params:
+          N: 1
+          d_model: 128
+          h: 4
+          d_ff: 16
+          dropout: 0.1
+    Flareformer:
+      architecture_params:
+        input_channel: 90
+        output_channel: 4
+        sfm_params:
+          N: 1
+          d_model: 128
+          h: 4
+          d_ff: 16
+          dropout: 0.1
+        mm_params:
+          N: 1
+          d_model: 128
+          h: 4
+          d_ff: 16
+          dropout: 0.1
+    CNNLSTM:
+      architecture_params:
+        hidden_dim: 128
+        cnn_layers: 4
+    Ours:
+      architecture_params:
+        D: 64
+        drop_path_rate: 0.6
+        layer_scale_init_value: 1.0e-6
+        L: 128
+        L_SSE: 3
+        L_LT: 1
+        L_mixing: 2 
+        dropout_rates:
+          sse: 0.6
+          dwcm: 0.6
+          stssm: 0.6
+          ltssm: 0.6
+          mixing_ssm: 0.6
+          head: 0.6

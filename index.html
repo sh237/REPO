@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>フレアデモ</title>
+    <link rel="stylesheet" href="front/style.css">
+    <!-- Flatpickr のスタイル -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0"></script>
+</head>
+
+<body>
+    <!-- ヘッダー（今は空） -->
+    <header></header>
+
+    <!-- 上部：左右に分割 -->
+    <div class="top-container">
+        <!-- 左側：日付・時刻・ボタン（left-top） -->
+        <div class="left-top">
+            <div id="date-container">
+                <!-- flatpickr用の input 要素。inline カレンダーが表示される -->
+                <input id="date-picker" type="text" readonly class="inline-calendar">
+                <div id="time-picker">
+                    <label for="utc-hour">UTC 時刻:</label>
+                    <select id="utc-hour"></select>
+                </div>
+                <!-- 新たに追加する予測時間選択UI（24h,48h,72h） -->
+                <div id="prediction-range-selector">
+                    <label><input type="radio" name="prediction-range" value="24" checked> 24h</label>
+                    <label><input type="radio" name="prediction-range" value="48"> 48h</label>
+                    <label><input type="radio" name="prediction-range" value="72"> 72h</label>
+                </div>
+                <button id="load-button">この条件で読み込む</button>
+            </div>
+        </div>
+        <!-- 右側：太陽画像 -->
+        <div class="right-top">
+            <h3 id="timestamp">Loading timestamp...</h3>
+            <div class="grid" id="aia-grid">
+                <!-- ここに太陽画像10枚（2行×5列）が動的に挿入されます -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 下部①：予測結果（横幅100%） -->
+    <div class="prediction-container">
+        <h3 id="prediction-header"></h3>
+        <div id="prediction-cards" class="card-container">
+            <!-- 予測カードの内容 -->
+        </div>
+        <div id="error-message" class="error-message"></div>
+        <div id="accuracy-container" style="margin:1em 0;">
+            <p id="accuracyDisplay">--</p>
+        </div>
+    </div>
+
+    <!-- 下部②：X線強度グラフ（横幅100%） -->
+    <div class="graph-container">
+        <h3>72時間後までのX線強度の推移 (GOES観測)</h3>
+        <canvas id="flareChart" width="600" height="300"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="front/script.js"></script>
+</body>
+
+</html>
