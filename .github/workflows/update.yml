@@ -28,8 +28,17 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run get_data
-        run: python back/get_data.py
+      - name: Run get_data for latest 2 hours
+        run: |
+          # 現在時刻のデータを取得
+          CURRENT_DATETIME=$(date -u +"%m%d%H")
+          echo "Fetching data for current hour: $CURRENT_DATETIME"
+          python back/get_data.py $CURRENT_DATETIME
+          
+          # 1時間前のデータを取得
+          PREV_DATETIME=$(date -u -d '1 hour ago' +"%m%d%H")
+          echo "Fetching data for previous hour: $PREV_DATETIME"
+          python back/get_data.py $PREV_DATETIME
 
       - name: Extract pretrain features
         run: |
