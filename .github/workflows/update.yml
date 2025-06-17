@@ -34,7 +34,7 @@ jobs:
       - name: Extract pretrain features
         run: |
           cd ml
-          # 現在時刻を取得してinference_pretrainを実行
+          # 現在時刻を取得してinference_pretrainを実行（1時間ごと）
           CURRENT_DATETIME=$(date -u +"%Y%m%d_%H0000")
           echo "Extracting features for datetime: $CURRENT_DATETIME"
           python inference_pretrain.py --params params/main/params.yaml --datetime $CURRENT_DATETIME --fold 1 --pretrain_checkpoint checkpoints/pretrain/ours.pth

@@ -205,13 +205,8 @@ def main():
         now_jst = datetime.now(tz=tz.gettz('Asia/Tokyo')) - timedelta(minutes=30)
         dt = now_jst.astimezone(tz=tz.tzutc()).replace(minute=0, second=0, microsecond=0)
 
-    # 奇数時の場合、1時間繰り下げて偶数時に調整
-    if dt.hour % 2 != 0:
-        update_xrs_json(dt)
-        dt -= timedelta(hours=1)
-        update_xrs_json(dt)
-    else:
-        update_xrs_json(dt)
+    # 1時間ごとに処理
+    update_xrs_json(dt)
 
     while True:
         update_xrs_json(dt)
@@ -231,7 +226,7 @@ def main():
             print(f"✅ H5ファイルとすべてのPNGファイルが既に存在: {h5_path}")
             break
 
-        # AIA画像とHMI画像の処理（2時間粒度）
+        # AIA画像とHMI画像の処理（1時間ごと）
         aia_images = []
         for wl in AIA_WAVELENGTHS:
             image_data = fetch_and_process_aia_image(wl, dt)
@@ -257,8 +252,8 @@ def main():
 
         save_h5(aia_images, hmi, dt)
 
-        # 2時間前に遡る
-        # dt -= timedelta(hours=2) # この行をコメントアウト
+        # 1時間前に遡る（1時間ごとの処理に変更）
+        break  # 単発実行にして、GitHub Actionsで1時間ごとに呼び出す
 
 
 if __name__ == '__main__':

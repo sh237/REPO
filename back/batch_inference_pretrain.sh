@@ -5,8 +5,6 @@
 # 使用方法: ./batch_inference_pretrain.sh START_DATE END_DATE
 # 例: ./batch_inference_pretrain.sh "2024-01-15 00:00" "2024-01-16 23:00"
 
-set -e
-
 # 引数チェック
 if [ $# -ne 2 ]; then
     echo "使用方法: $0 START_DATE END_DATE"
@@ -43,6 +41,10 @@ echo "===================="
 # 現在の日時を開始日時に設定
 current_date="$START_DATE"
 
+# 成功・失敗カウンタ
+success_count=0
+error_count=0
+
 # 1時間毎にループ
 while [[ $(date -d "$current_date" +%s) -le $(date -d "$END_DATE" +%s) ]]; do
     # YYYYMMDD_HHMMSS形式に変換（inference_pretrain.pyの引数形式に合わせる）
@@ -57,8 +59,11 @@ while [[ $(date -d "$current_date" +%s) -le $(date -d "$END_DATE" +%s) ]]; do
         --fold 1 \
         --pretrain_checkpoint checkpoints/pretrain/ours.pth); then
         echo "✅ 特徴量抽出完了: $current_date"
+        ((success_count++))
     else
         echo "❌ 特徴量抽出エラー: $current_date"
+        ((error_count++))
+        # エラーが発生しても続行する
     fi
     
     echo "--------------------"
@@ -69,4 +74,6 @@ while [[ $(date -d "$current_date" +%s) -le $(date -d "$END_DATE" +%s) ]]; do
 done
 
 echo "===================="
-echo "すべての特徴量抽出が完了しました" 
+echo "すべての特徴量抽出が完了しました"
+echo "成功: ${success_count}件"
+echo "失敗: ${error_count}件" 

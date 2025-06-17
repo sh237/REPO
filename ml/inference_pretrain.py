@@ -123,7 +123,7 @@ def main():
     parser.add_argument("--data_root", default="./datasets", help="datasetsディレクトリのルート")
     parser.add_argument("--pretrain_checkpoint", default="checkpoints/pretrain/ours.pth", help="事前学習済みモデルのチェックポイントパス")
     parser.add_argument("--model_arch", default="vit_for_FT128db", help="事前学習モデルのアーキテクチャ (例: vit_for_FT128db, mae_vit_base_patch16_dec512d8b)")
-    parser.add_argument("--output_feature_dir", default="ml/datasets/all_features", help="抽出した特徴量の保存先ディレクトリ")
+    parser.add_argument("--output_feature_dir", default="datasets/all_features", help="抽出した特徴量の保存先ディレクトリ")
     parser.add_argument("--cuda_device", type=int, default=0, help="使用するCUDAデバイス番号 (CPUの場合は-1)")
     parser.add_argument("--debug", action="store_true", help="デバッグモード: 少数のファイルのみ処理し、詳細ログを出力")
     args = parser.parse_args()
