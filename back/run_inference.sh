@@ -170,9 +170,24 @@ else
     if git commit -m "$COMMIT_MESSAGE"; then
         echo "✅ Commit successful."
         
-        # upstreamブランチが設定されていない場合の対処
+        # pushの前に必ずpullする
+        echo "Pulling latest changes from remote..."
+        if git pull origin main; then
+            echo "✅ Pull successful."
+        else
+            echo "❌ Pull failed. Attempting to resolve..."
+            # pullが失敗した場合は、rebaseで解決を試みる
+            if git pull --rebase origin main; then
+                echo "✅ Pull with rebase successful."
+            else
+                echo "❌ Pull with rebase failed. Manual intervention may be required."
+                exit 1
+            fi
+        fi
+        
+        # pullが成功したらpush
         echo "Pushing changes..."
-        if git push 2>/dev/null; then
+        if git push origin main; then
             echo "✅ Push successful."
         else
             echo "Setting upstream branch 'origin main' and pushing..."
