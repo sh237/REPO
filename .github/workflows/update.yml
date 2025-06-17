@@ -9,6 +9,8 @@ on:
 jobs:
   inference:
     runs-on: ubuntu-latest
+    permissions: # トークンに書き込み権限を付与
+      contents: write
     steps:
       - uses: actions/checkout@v3
 
